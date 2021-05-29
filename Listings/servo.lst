@@ -1,0 +1,82 @@
+C51 COMPILER V9.60.0.0   SERVO                                                             05/29/2021 21:28:47 PAGE 1   
+
+
+C51 COMPILER V9.60.0.0, COMPILATION OF MODULE SERVO
+OBJECT MODULE PLACED IN .\Objects\servo.obj
+COMPILER INVOKED BY: C:\Keil_v5\C51\BIN\C51.EXE servo.c OPTIMIZE(8,SPEED) BROWSE DEBUG OBJECTEXTEND PRINT(.\Listings\ser
+                    -vo.lst) TABS(2) OBJECT(.\Objects\servo.obj)
+
+line level    source
+
+   1          #include <STC15F2K60S2.H>
+   2          #include "intrins.h"
+   3          
+   4          sbit servo = P3^7;//∂Êª˙µƒioø⁄
+   5          
+   6          unsigned char signal;//–≈∫≈≤Œ ˝
+   7          unsigned char input;// ‰»Î≤Œ ˝
+   8          void Timer0Init(void) //100Œ¢√Î@12.000MHz
+   9          {
+  10   1      AUXR |= 0x80; //∂® ±∆˜ ±÷”1Tƒ£ Ω
+  11   1      TMOD &= 0xF0; //…Ë÷√∂® ±∆˜ƒ£ Ω
+  12   1      TMOD |= 0x01; //…Ë÷√∂® ±∆˜ƒ£ Ω
+  13   1      TL0 = 0x50; //…Ë÷√∂® ±≥ı÷µ
+  14   1      TH0 = 0xFB; //…Ë÷√∂® ±≥ı÷µ
+  15   1      TF0 = 0; //«Â≥˝TF0±Í÷æ
+  16   1      TR0 = 1; //∂® ±∆˜0ø™ ºº∆ ±
+  17   1      EA=1;//cpuø™∑≈◊‹÷–∂œ
+  18   1      ET0=1;//ø™∆Ù∂® ±∆˜0÷–∂œ
+  19   1      }
+  20          
+  21          void Delay(unsigned int time) //@12.000MHz
+  22          { while(time--)
+  23   1         { unsigned char i, j;
+  24   2            i = 12;
+  25   2            j = 169; 
+  26   2            do 
+  27   2               { while (--j); } while (--i);
+  28   2         }
+  29   1      }
+  30          
+  31          void servo_function() interrupt 1
+  32          {
+  33   1      TR0=0;//∂® ±∆˜0‘À––øÿ÷∆
+  34   1      TL0 = 0x50; //‘Ÿ“ª¥Œ…Ë÷√∂® ±≥ı÷µ
+  35   1      TH0 = 0xFB; //‘Ÿ“ª¥Œ…Ë÷√∂® ±≥ı÷µ
+  36   1      signal++;
+  37   1      if(signal>1999) signal=0;
+  38   1      //∏¯–≈∫≈≤Œ ˝…Ë÷√„–÷µ£¨„–÷µ»°æˆ”⁄ƒ„µƒ ‰»Î∫Õ—” ±∑÷≥…¡À∂‡…Ÿ∑›
+  39   1      if(signal<input) servo=1;//–≈∫≈–°”⁄ ‰»Î£¨∏ﬂµÁ∆Ω
+  40   1      else servo=0;//∑¥÷Æ,µÕµÁ∆Ω
+  41   1      TR0=1;//∂® ±∆˜0‘À––øÿ÷∆
+  42   1      }
+  43          
+  44          void main()
+  45          {
+  46   1        int i=0,j=0;
+  47   1         Timer0Init();
+  48   1         //‘⁄’‚¿Ôø…“‘∂‘ ‰»ÎΩ¯––ªÒ»°∫Õ¥¶¿Ì£¨’‚“ª≤Ω”»Œ™πÿº¸£¨πÿœµµΩ∂Êª˙–˝◊™µƒΩ«∂»°£ø…“‘ π”√ad◊™ªªªÒ»° ‰»Îµƒ ˝◊÷°£’
+             -‚¿ÔŒ“œ»“‘“ª∏ˆ◊Û”“∑¥∏¥µƒ≥Ã–Ú µ¿˝
+  49   1         while(1)
+  50   1         {
+  51   2            for(i=50;i<250;i++) input=i;
+  52   2            Delay(1);
+  53   2            for(j=250;j>50;j--) input=j;
+C51 COMPILER V9.60.0.0   SERVO                                                             05/29/2021 21:28:47 PAGE 2   
+
+  54   2         }
+  55   1      }
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =    153    ----
+   CONSTANT SIZE    =   ----    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =      2       2
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)
